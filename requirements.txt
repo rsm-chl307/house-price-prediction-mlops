@@ -1,0 +1,8 @@
+xgboost
+scikit-learn
+pandas
+dvc[s3]
+mlflow
+dagshub
+pytest
+streamlit
