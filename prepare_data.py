@@ -2,20 +2,23 @@ import pandas as pd
 from sklearn.datasets import fetch_california_housing
 import os
 
-# 1. Create directory for raw data
 os.makedirs("data/raw", exist_ok=True)
 
-# 2. Fetch the California housing dataset from Scikit-Learn
 print("Fetching dataset...")
 data = fetch_california_housing(as_frame=True)
 df = data.frame
 
-# 3. Simulate time-slicing: This is our first batch of data (Month 1)
-# We take a 20% random sample as the initial training set
-batch_1 = df.sample(frac=0.2, random_state=42)
+# --- SIMULATING MONTH 2 ---
+# 1. We take another 10% sample, but we'll exclude the data used in Batch 1
+# To keep it simple for this exercise, we use a different random_state
+batch_2 = df.sample(frac=0.1, random_state=7)
 
-# 4. Save to CSV
+# 2. INJECTING DATA DRIFT (Optional but Professional)
+# Let's pretend inflation happened: increase MedInc by 20%
+batch_2['MedInc'] = batch_2['MedInc'] * 1.2 
+
+# 3. OVERWRITE the previous file to simulate a data update
 file_path = "data/raw/house_price.csv"
-batch_1.to_csv(file_path, index=False)
+batch_2.to_csv(file_path, index=False)
 
-print(f"Batch 1 successfully saved to {file_path}! (Total: {len(batch_1)} records)")
+print(f"Month 2 data (with Drift) saved to {file_path}! (Total: {len(batch_2)} records)")
