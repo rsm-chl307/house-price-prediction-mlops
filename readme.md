@@ -1,4 +1,4 @@
-# 🚀 End-to-End MLOps: House Price Prediction Pipeline
+#  End-to-End MLOps: House Price Prediction Pipeline
 > **A complete machine learning lifecycle featuring automated data drift monitoring and experiment tracking.**
 
 ## 專案目標 (Project Objective)
