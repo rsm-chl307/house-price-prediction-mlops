@@ -1,28 +1,32 @@
 #!/bin/bash
-
-# --- MLOps Pipeline Automation Script ---
+# Exit immediately if a command fails
+set -e
 
 echo " Starting MLOps Pipeline..."
 
 # 1. Update Data
-echo "Step 1: Generating and updating data..."
+echo "Step 1: Updating data..."
 python prepare_data.py
 
-# 2. Train Model
-echo "Step 2: Training the model and logging to MLflow..."
+# 2. Drift Detection
+echo "Step 2: Checking for Data Drift..."
+python check_drift.py
+
+# 3. Train Model
+echo "Step 3: Training the model and logging to MLflow..."
 python train.py
 
-# 3. Version Control (DVC)
-echo "Step 3: Tracking new model and data with DVC..."
+# 4. Version Control (DVC)
+echo "Step 4: Tracking changes with DVC..."
 dvc add data/raw/house_price.csv
+dvc add data/raw/house_price_baseline.csv
 dvc add model.json
 
-# 4. Sync with Remote (Git & DagsHub)
-echo "Step 4: Pushing code and metadata to DagsHub..."
+# 5. Sync with Remote
+echo "Step 5: Pushing metadata and code..."
 git add .
-git commit -m "Auto-update: Pipeline executed on $(date)"
+git commit -m "Auto-update: Pipeline executed on $(date) [skip ci]" || echo "No changes to commit"
 git push
 dvc push
 
-echo " Pipeline completed successfully!"
-echo "You can now run 'streamlit run ui.py' to see the results."
+echo "Pipeline completed successfully!"
