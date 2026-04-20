@@ -1,1 +1,1 @@
-{"feature": "MedInc", "p_value": 1.0, "drift_detected": false, "baseline_used": "data/raw/house_price_baseline.csv"}
+{"feature": "MedInc", "p_value": 3.7445673387091473e-38, "drift_detected": true, "baseline_used": "data/raw/house_price_baseline.csv"}
