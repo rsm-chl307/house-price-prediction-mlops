@@ -57,7 +57,8 @@ def check_drift():
         "baseline_used": baseline_path
     }
     
-    with open("drift_report.json", "w") as f:
+    os.makedirs("reports", exist_ok=True)
+    with open("reports/drift_report.json", "w") as f:
         json.dump(report, f)
     
     return True

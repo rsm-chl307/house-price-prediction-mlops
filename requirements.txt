@@ -1,8 +1,16 @@
+# Core Machine Learning & Data Processing
 xgboost
 scikit-learn
 pandas
+scipy
+
+# MLOps & Version Control
 dvc[s3]
 mlflow
 dagshub
+
+# Automated Testing & Reporting
 pytest
+
+# Web Interface & Deployment
 streamlit

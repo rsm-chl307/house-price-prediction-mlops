@@ -22,11 +22,12 @@ By adjusting the features in the sidebar, you can see how different factors impa
 # 3. Model Loading Logic
 @st.cache_resource
 def load_model():
-    model_path = "model.json"
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    model_path = os.path.join(base_dir, "model.json")
+    
     if os.path.exists(model_path):
         model = xgb.Booster()
         model.load_model(model_path)
-        # Get file metadata for MLOps tracking display
         mod_time = time.ctime(os.path.getmtime(model_path))
         return model, mod_time
     else:
@@ -39,26 +40,23 @@ st.sidebar.header(" Input Features")
 st.sidebar.info("Adjust these values to simulate different area profiles.")
 
 def get_user_inputs():
-    # Primary Features with Sliders
     med_inc = st.sidebar.slider("Median Income (10k USD)", 0.5, 15.0, 3.87, help="Median income for households within a block group.")
     house_age = st.sidebar.slider("Median House Age", 1.0, 52.0, 28.0)
     ave_rooms = st.sidebar.slider("Average Rooms", 1.0, 10.0, 5.0)
     population = st.sidebar.number_input("Total Population", value=1500, step=100)
     
-    # Location Features
     st.sidebar.markdown("---")
     st.sidebar.subheader("Map Location")
     lat = st.sidebar.slider("Latitude", 32.0, 42.0, 34.05)
     lon = st.sidebar.slider("Longitude", -124.0, -114.0, -118.24)
     
-    # Encapsulate into a DataFrame
     data = {
         'MedInc': med_inc,
         'HouseAge': house_age,
         'AveRooms': ave_rooms,
-        'AveBedrms': 1.0, # Default value
+        'AveBedrms': 1.0, 
         'Population': population,
-        'AveOccup': 3.0,   # Default value
+        'AveOccup': 3.0,   
         'Latitude': lat,
         'Longitude': lon
     }
@@ -72,29 +70,25 @@ col1, col2 = st.columns([1, 1])
 with col1:
     st.subheader(" Prediction Results")
     if model:
-        # Inference
         dmatrix = xgb.DMatrix(input_df)
         prediction = model.predict(dmatrix)[0]
         
-        # Display Metric
         st.metric(
             label="Predicted Median House Value", 
             value=f"${prediction * 100000:,.0f}",
             delta=f"Based on {input_df['MedInc'].iloc[0]} Income Level"
         )
         
-        # MLOps Metadata Box
         st.success(f" Model Loaded Successfully")
         with st.expander("Show Model Metadata"):
             st.write(f"**Model Type:** XGBoost Regressor")
             st.write(f"**Last Updated:** {model_date}")
             st.write(f"**Source:** Local `model.json` (Synced via DVC)")
     else:
-        st.error(" Model file `model.json` not found. Please run `train.py` first.")
+        st.error(" Model file `model.json` not found in project root. Please run `scripts/train.py` first.")
 
 with col2:
     st.subheader(" Location Preview")
-    # Mapping the selected coordinates
     map_data = pd.DataFrame({'lat': input_df['Latitude'], 'lon': input_df['Longitude']})
     st.map(map_data)
 
