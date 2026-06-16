@@ -8,13 +8,32 @@ import dagshub
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import root_mean_squared_error
 
+import os
+from dotenv import load_dotenv
+from pathlib import Path
+import time
+
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
 # 1. Global Configuration & Initialization
 REPO_OWNER = 'rsm-chl307'
 REPO_NAME = 'house-price-prediction-mlops'
 DATA_PATH = "data/raw/house_price.csv"
 MODEL_NAME = "california-housing-model"
 
-dagshub.init(repo_owner=REPO_OWNER, repo_name=REPO_NAME, mlflow=True)
+for i in range(3):
+    try:
+        dagshub.init(
+            repo_owner=REPO_OWNER,
+            repo_name=REPO_NAME,
+            mlflow=True
+        )
+        break
+    except Exception as e:
+        print(f"Attempt {i+1} failed: {e}")
+        time.sleep(5)
+else:
+    raise RuntimeError("Failed to connect to DagsHub after 3 retries")
 
 def get_data_hash(filepath):
     """

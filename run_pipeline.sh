@@ -22,8 +22,12 @@ dvc add data/raw/house_price.csv
 dvc add data/raw/house_price_baseline.csv
 dvc add model.json
 
-dvc add reports/drift_report.json
-dvc add reports/MLOps_System_Final_Report.pdf
+if [ -f reports/drift_report.json ]; then
+    dvc add reports/drift_report.json
+else
+    echo "Warning: reports/drift_report.json not found, skipping DVC tracking."
+fi
+# dvc add reports/MLOps_System_Final_Report.pdf
 
 # 5. Sync with Remote
 echo "Step 5: Pushing metadata and code..."

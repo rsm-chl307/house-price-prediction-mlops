@@ -1,5 +1,5 @@
 outs:
-- md5: 0f56959eae81ea717a5c429907946e65
-  size: 134
+- md5: 258c1fb63914e34081f8a7605547f95f
+  size: 116
   hash: md5
   path: drift_report.json
