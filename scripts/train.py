@@ -21,19 +21,20 @@ REPO_NAME = 'house-price-prediction-mlops'
 DATA_PATH = "data/raw/house_price.csv"
 MODEL_NAME = "california-housing-model"
 
-for i in range(3):
-    try:
-        dagshub.init(
-            repo_owner=REPO_OWNER,
-            repo_name=REPO_NAME,
-            mlflow=True
-        )
-        break
-    except Exception as e:
-        print(f"Attempt {i+1} failed: {e}")
-        time.sleep(5)
-else:
-    raise RuntimeError("Failed to connect to DagsHub after 3 retries")
+from tenacity import retry, stop_after_attempt, wait_fixed
+
+@retry(
+    stop=stop_after_attempt(5),
+    wait=wait_fixed(5)
+)
+def init_dagshub():
+    dagshub.init(
+        repo_owner=REPO_OWNER,
+        repo_name=REPO_NAME,
+        mlflow=True
+    )
+
+init_dagshub()
 
 def get_data_hash(filepath):
     """

@@ -2,6 +2,10 @@
 # Exit immediately if a command fails
 set -e
 
+
+echo "Setting up DVC authentication..."
+python scripts/setup_dvc.py
+
 echo " Starting MLOps Pipeline..."
 
 # 1. Update Data
